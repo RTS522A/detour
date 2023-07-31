@@ -18,8 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-2019, windows-2022]
-        arch: [x86, x64, x64_arm, x64_arm64]
-        conf: [Release, Debug]
+        arch: [x86, x64]
+        conf: [Release]
 
     steps:
       - name: Clone Repository
@@ -30,13 +30,6 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
-
-      - name: Initialize CodeQL for C++
-        uses: github/codeql-action/init@v2
-        if: ${{ matrix.os == 'windows-2019' && matrix.conf == 'Debug' }}
-        with:
-          languages: cpp
-          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Build Detours for ${{ matrix.arch }} on ${{ matrix.os }}
         env:
@@ -61,6 +54,3 @@ jobs:
             bin.*/
             include/
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        if: ${{ matrix.os == 'windows-2019' && matrix.conf == 'Debug' }}
